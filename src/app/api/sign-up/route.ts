@@ -3,11 +3,11 @@ import UserModel from '@/models/user';
 import bcrypt from 'bcryptjs';
 import { sendVerificationEmail } from '@/helpers/sendEmail';
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   await dbConnect();
-  try {
-    const { email, username, password } = await req.json();
 
+  try {
+    const { email, username, password } = await request.json();
     const existingUserVerifiedByUsername = await UserModel.findOne({
       username,
       isVerified: true,
@@ -20,8 +20,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const verifyCode = Math.floor(100000 + Math.random() * 9000000).toString();
-    const existingUserByEmail = await UserModel.findOne(email);
+    const verifyCode = Math.floor(10000 + Math.random() * 9000000).toString();
+    const existingUserByEmail = await UserModel.findOne({ email });
 
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {
