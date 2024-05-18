@@ -8,21 +8,19 @@ import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/validators';
 import { z } from 'zod';
 import { ApiResponse } from '@/types/api-response';
-import Link from 'next/link';
-import axios, { AxiosError } from 'axios';
 import { useToast } from '@/components/ui/use-toast';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import axios, { AxiosError } from 'axios';
+import Link from 'next/link';
 import {
   Form,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormControl,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
 
 const Page: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -50,7 +48,6 @@ const Page: React.FC = () => {
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
         setUsernameMessage(axiosError.response?.data.message ?? 'Error');
-        console.log(error);
       } finally {
         setIsCheckingUsername(false);
       }
@@ -69,9 +66,7 @@ const Page: React.FC = () => {
         duration: 3000,
       });
       router.replace(`/verify/${username}`);
-      setIsSubmitting(false);
     } catch (error) {
-      console.error('Error in SignUp of user');
       const axiosError = error as AxiosError<ApiResponse>;
       let errorMessage = axiosError.response?.data.message;
       toast({
@@ -80,7 +75,8 @@ const Page: React.FC = () => {
         duration: 3000,
         variant: 'destructive',
       });
-      console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
