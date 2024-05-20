@@ -9,7 +9,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     const user: User = session?.user;
-    if (!session || !session.user)
+    if (!session || !user)
       return Response.json(
         {
           success: false,
@@ -19,28 +19,26 @@ export async function PATCH(request: Request) {
       );
 
     const userId = user._id;
-    const { acceptMessage } = await request.json();
+    const { acceptMessages } = await request.json();
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { isAcceptingMessage: acceptMessage },
+      { isAcceptingMessage: acceptMessages },
       { new: true }
     );
 
     if (!updatedUser)
       return Response.json(
-        {
-          success: false,
-          message: 'User not found',
-        },
+        { success: false, message: 'User not found' },
         { status: 401 }
       );
 
     return Response.json(
       {
         success: true,
-        message: 'User updated successfully',
-        updatedUser,
+        message: acceptMessages
+          ? 'You are now Accepting messages'
+          : 'You are now not accepting messages',
       },
       { status: 200 }
     );

@@ -50,16 +50,16 @@ const Page: React.FC = () => {
           variant: 'warning',
         });
       } else if (result?.ok === true) {
+        router.replace('/dashboard');
         toast({
           title: 'Login Successful',
           description: 'You have successfully logged in',
-          duration: 3000,
+          duration: 1000,
           variant: 'success',
         });
-        setTimeout(() => {
-          console.log('redirecting to dashboard');
-          router.replace('/dashboard');
-        }, 3000);
+        // setTimeout(() => {
+        //   console.log('redirecting to dashboard');
+        // }, 1000);
       }
     } catch (error) {
       console.error('An unexpected error occurred:', error);
@@ -120,9 +120,9 @@ const Page: React.FC = () => {
         </Form>
         <div className="text-center mt-4">
           <p>
-            Already a member?{' '}
-            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
-              Sign in
+            Dont have an account?{' '}
+            <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
+              Sign Up
             </Link>
           </p>
         </div>

@@ -1,56 +1,55 @@
-import { getServerSession, User } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/options';
 import dbConnect from '@/lib/db';
 import UserModel from '@/models/user';
 import mongoose from 'mongoose';
+import { User } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function GET(request: Request) {
   await dbConnect();
-
   const session = await getServerSession(authOptions);
-  const user: User = session?.user;
+  const _user: User = session?.user;
 
-  if (!session || !session.user)
+  if (!session || !_user) {
     return Response.json(
-      {
-        success: false,
-        message: 'User not Authenticated',
-      },
+      { success: false, message: 'Not authenticated' },
       { status: 401 }
     );
+  }
 
-  const userId = new mongoose.Types.ObjectId(user._id);
+  const userId = new mongoose.Types.ObjectId(_user._id);
   try {
-    const user = await UserModel.aggregate([
-      { $match: { id: userId } },
+    const user = await UserModel.findOne({ _id: userId }).exec();
+
+    if (!user) {
+      return Response.json(
+        { success: false, message: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    const messages = await UserModel.aggregate([
+      { $match: { _id: userId } },
       { $unwind: '$messages' },
       { $sort: { 'messages.createdAt': -1 } },
       { $group: { _id: '$_id', messages: { $push: '$messages' } } },
-    ]);
+    ]).exec();
 
-    if (!user || user.length === 0)
+    if (!messages || messages.length === 0) {
       return Response.json(
-        {
-          success: false,
-          message: 'User not found',
-        },
-        { status: 401 }
+        { success: false, message: 'Messages not found' },
+        { status: 404 }
       );
+    }
 
     return Response.json(
-      {
-        success: true,
-        messages: user[0].messages,
-      },
+      { success: true, messages: messages[0].messages },
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
+    console.error('An unexpected error occurred:', error);
     return Response.json(
-      {
-        success: false,
-        message: 'Error in getting error accepting status',
-      },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     );
   }

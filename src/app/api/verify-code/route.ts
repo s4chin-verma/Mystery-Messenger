@@ -5,10 +5,8 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    console.clear();
     const { username, verifyCode } = await request.json();
     const decodedUsername = decodeURIComponent(username);
-    console.log('user');
     const user = await UserModel.findOne({ username: decodedUsername });
     if (!user) {
       return Response.json(

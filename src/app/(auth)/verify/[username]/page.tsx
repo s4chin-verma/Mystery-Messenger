@@ -6,9 +6,9 @@ import { verifySchema } from '@/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import axios, { AxiosError } from 'axios';
+import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import axios, { AxiosError } from 'axios';
 import {
   Form,
   FormControl,
@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 
 export default function VerifyAccount() {
   const router = useRouter();
-  const param = useParams<{ username: string }>();
+  const params = useParams<{ username: string }>();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof verifySchema>>({
@@ -32,9 +32,10 @@ export default function VerifyAccount() {
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       const response = await axios.post('/api/verify-code', {
-        username: param.username,
-        code: data.code,
+        username: params.username,
+        verifyCode: data.code,
       });
+
       toast({
         title: 'Success',
         description: response.data.message,

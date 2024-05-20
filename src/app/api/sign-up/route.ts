@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const verifyCode = Math.floor(10000 + Math.random() * 9000000).toString();
+    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     const existingUserByEmail = await UserModel.findOne({ email });
 
     if (existingUserByEmail) {
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
         existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.verifyCode = verifyCode;
         existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
         await existingUserByEmail.save();
       }
