@@ -1,14 +1,14 @@
 'use client';
 
-import { useToast } from '@/components/ui/use-toast';
-import { ApiResponse } from '@/types/api-response';
-import { verifySchema } from '@/validators';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams, useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import axios, { AxiosError } from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
+import { verifyCodeSchema } from '@/validators';
+import { useParams, useRouter } from 'next/navigation';
+import { ApiResponse } from '@/types/api-response';
 import {
   Form,
   FormControl,
@@ -18,24 +18,27 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 
-export default function VerifyAccount() {
+export default function Page() {
   const router = useRouter();
   const params = useParams<{ username: string }>();
-  const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof verifySchema>>({
-    resolver: zodResolver(verifySchema),
+  const form = useForm<z.infer<typeof verifyCodeSchema>>({
+    resolver: zodResolver(verifyCodeSchema),
+    defaultValues: { pin: '' },
   });
 
-  const onSubmit = async (data: z.infer<typeof verifySchema>) => {
+  const onSubmit = async (data: z.infer<typeof verifyCodeSchema>) => {
     try {
       const response = await axios.post('/api/verify-code', {
         username: params.username,
-        verifyCode: data.code,
+        verifyCode: data.pin,
       });
-
       toast({
         title: 'Success',
         description: response.data.message,
@@ -53,44 +56,49 @@ export default function VerifyAccount() {
       });
     }
   };
+
   return (
-    <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-          <div className="text-center">
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-              Verify account
-            </h1>
-            <p className="text-center">
-              A Verification code has been sent to your respective email
-            </p>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Verification Code</FormLabel>
-                      <FormControl>
-                        <Input placeholder="123456" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Please enter your verification code
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit">Submit</Button>
-              </form>
-            </Form>
-          </div>
-        </div>
+    <section className="h-screen w-full flex justify-center items-center">
+      <div className="py-8 px-6 bg-gray-50 rounded-lg">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 flex flex-col items-center justify-center"
+          >
+            <FormField
+              control={form.control}
+              name="pin"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-center justify-center">
+                  <FormLabel className="text-xl mb-6">
+                    One-Time Password
+                  </FormLabel>
+                  <FormControl>
+                    <InputOTP maxLength={6} {...field}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                      </InputOTPGroup>
+                      <InputOTPSeparator />
+                      <InputOTPGroup>
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <FormDescription className="text-lg">
+                    Please enter the one-time password sent to your email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
       </div>
-    </>
+    </section>
   );
 }

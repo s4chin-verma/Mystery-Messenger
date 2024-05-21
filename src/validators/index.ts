@@ -24,10 +24,11 @@ export const signInSchema = z.object({
   password: z.string().trim().min(1, { message: 'Please enter password' }),
 });
 
-export const verifySchema = z.object({
-  code: z.string().length(6, 'verify code must be 6 characters long'),
+export const verifyCodeSchema = z.object({
+  pin: z.string().min(6, {
+    message: 'Your one-time password must be 6 characters.',
+  }),
 });
-
 export const acceptMessageSchema = z.object({
   accepting: z.boolean(),
 });

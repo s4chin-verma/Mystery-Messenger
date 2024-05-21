@@ -9,7 +9,7 @@ export const NavBar = () => {
   const { data: session } = useSession();
   const user: User = session?.user;
   return (
-    <header className="py-4 md:py-6 shadow-md">
+    <header className="py-4 md:py-6 shadow-md fixed top-0 left-0 right-0 bg-white">
       <nav className="md:max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center">
         <Link href="/">
           <h1 className="text-xl font-bold mb-4 md:mb-0">True Feedback</h1>

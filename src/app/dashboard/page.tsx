@@ -28,7 +28,6 @@ function UserDashboard() {
   };
 
   const { data: session } = useSession();
-  console.log(session);
   const user: User = session?.user;
 
   const form = useForm({
@@ -44,12 +43,8 @@ function UserDashboard() {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
       setValue('acceptMessages', response.data.isAcceptingMessage);
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
       toast({
-        title: 'Error',
-        description:
-          axiosError.response?.data.message ??
-          'Failed to fetch message settings',
+        title: 'Failed to get accept messages',
         variant: 'destructive',
       });
     } finally {
