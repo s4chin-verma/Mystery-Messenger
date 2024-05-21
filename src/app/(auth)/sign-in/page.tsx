@@ -1,17 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useDebounceCallback } from 'usehooks-ts';
 import { useRouter } from 'next/navigation';
 import { signInSchema } from '@/validators';
 import { z } from 'zod';
-import { ApiResponse } from '@/types/api-response';
 import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { EyeIcon, Loader2, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import {
   Form,
@@ -24,8 +22,11 @@ import { signIn } from 'next-auth/react';
 
 const Page: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const Icon = showPassword ? EyeIcon : EyeOff;
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: { identifier: '', password: '' },
@@ -57,9 +58,6 @@ const Page: React.FC = () => {
           duration: 1000,
           variant: 'success',
         });
-        // setTimeout(() => {
-        //   console.log('redirecting to dashboard');
-        // }, 1000);
       }
     } catch (error) {
       console.error('An unexpected error occurred:', error);
@@ -99,9 +97,17 @@ const Page: React.FC = () => {
               name="password"
               control={form.control}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="relative">
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} name="password" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                    name="password"
+                  />
+                  <Icon
+                    className="absolute space-y-3 right-3 top-8 text-black-900 z-20 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -120,7 +126,7 @@ const Page: React.FC = () => {
         </Form>
         <div className="text-center mt-4">
           <p>
-            Dont have an account?{' '}
+            Dont have an account?
             <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
               Sign Up
             </Link>

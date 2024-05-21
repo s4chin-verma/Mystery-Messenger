@@ -11,7 +11,7 @@ import { ApiResponse } from '@/types/api-response';
 import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { EyeIcon, EyeOff, Loader2 } from 'lucide-react';
 import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 import {
@@ -27,11 +27,19 @@ const Page: React.FC = () => {
   const [usernameMessage, setUsernameMessage] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+  const Icon = showPassword ? EyeIcon : EyeOff;
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { username: '', email: '', password: '' },
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const debounced = useDebounceCallback(setUsername, 300);
@@ -58,6 +66,7 @@ const Page: React.FC = () => {
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
+    setShowPassword(false);
     try {
       const response = await axios.post<ApiResponse>('/api/sign-up', data);
       toast({
@@ -127,9 +136,6 @@ const Page: React.FC = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <Input {...field} name="email" />
-                  <p className="text-muted text-gray-400 text-sm">
-                    We will send you a verification code
-                  </p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -139,13 +145,42 @@ const Page: React.FC = () => {
               name="password"
               control={form.control}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="relative">
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} name="password" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                    name="password"
+                  />
+                  <Icon
+                    className="absolute space-y-3 right-3 top-8 text-black-900 z-20 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              name="confirmPassword"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="relative">
+                  <FormLabel>Confirm Password</FormLabel>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                    name="confirmPassword"
+                  />
+                  <Icon
+                    className="absolute space-y-3 right-3 top-8 text-black-900 z-20 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>

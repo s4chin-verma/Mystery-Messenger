@@ -28,6 +28,8 @@ function UserDashboard() {
   };
 
   const { data: session } = useSession();
+  console.log(session);
+  const user: User = session?.user;
 
   const form = useForm({
     resolver: zodResolver(acceptMessageSchema),
@@ -84,7 +86,6 @@ function UserDashboard() {
     [setIsLoading, setMessages, toast]
   );
 
-  // Fetch initial state from the server
   useEffect(() => {
     if (!session || !session.user) return;
 

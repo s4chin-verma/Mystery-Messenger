@@ -9,12 +9,14 @@ export const NavBar = () => {
   const { data: session } = useSession();
   const user: User = session?.user;
   return (
-    <header className="p-4 md:p-6 shadow-md">
-      <nav className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <a href="#" className="text-xl font-bold mb-4 md:mb-0"></a>
+    <header className="py-4 md:py-6 shadow-md">
+      <nav className="md:max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <Link href="/">
+          <h1 className="text-xl font-bold mb-4 md:mb-0">True Feedback</h1>
+        </Link>
         {session ? (
           <>
-            <span className="mr-4">Welcome,{user.username || user.email}</span>
+            <span className="mr-4">Welcome, {user.username || user.email}</span>
             <Button
               onClick={() => {
                 signOut();

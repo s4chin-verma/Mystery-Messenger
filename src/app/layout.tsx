@@ -22,7 +22,7 @@ export default async function RootLayout({
       <AuthProvider>
         <body className={inter.className} suppressHydrationWarning={true}>
           <NavBar />
-          {children}
+          <main className="max-w-screen-xl mx-auto">{children}</main>
           <Toaster />
         </body>
       </AuthProvider>

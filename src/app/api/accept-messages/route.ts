@@ -2,15 +2,17 @@ import { getServerSession, User } from 'next-auth';
 import dbConnect from '@/lib/db';
 import UserModel from '@/models/user';
 import { authOptions } from '../auth/[...nextauth]/options';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest, response: NextResponse) {
   await dbConnect();
 
   try {
     const session = await getServerSession(authOptions);
     const user: User = session?.user;
+
     if (!session || !user)
-      return Response.json(
+      return NextResponse.json(
         {
           success: false,
           message: 'User not Authenticated',
@@ -28,12 +30,12 @@ export async function PATCH(request: Request) {
     );
 
     if (!updatedUser)
-      return Response.json(
+      return NextResponse.json(
         { success: false, message: 'User not found' },
         { status: 401 }
       );
 
-    return Response.json(
+    return NextResponse.json(
       {
         success: true,
         message: acceptMessages
@@ -44,7 +46,7 @@ export async function PATCH(request: Request) {
     );
   } catch (error) {
     console.log(error);
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         message: 'Failed to update user status to accept messages',
@@ -58,6 +60,8 @@ export async function GET(request: Request) {
   await dbConnect();
 
   try {
+    // const { username } = await request.json();
+    // console.log(username);
     const session = await getServerSession(authOptions);
     const user: User = session?.user;
 
