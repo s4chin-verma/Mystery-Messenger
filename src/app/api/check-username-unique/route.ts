@@ -7,11 +7,14 @@ const UsernameQuerySchema = z.object({
   username: usernameValidation,
 });
 
+export const dynamic = 'force-static';
+
 export async function GET(request: Request) {
   dbConnect();
 
   try {
     const { searchParams } = new URL(request.url);
+    console.log(searchParams);
     const queryParams = { username: searchParams.get('username') };
     const result = UsernameQuerySchema.safeParse(queryParams);
 

@@ -42,8 +42,6 @@ const Page: React.FC = () => {
         password: data.password,
       });
 
-      console.log(result);
-
       if (result?.error) {
         toast({
           title: 'Login Failed',
