@@ -15,9 +15,9 @@ import {
 export default function Home() {
   return (
     <>
-      <main className="h-screen w-screen flex-grow flex flex-col items-center justify-center bg-gray-800 text-white">
+      <main className="h-screen w-screen flex-grow flex flex-col items-center justify-center bg-gray-800 text-white px-6 md:px-0">
         <section className="text-center">
-          <h1 className="text-3xl md:text-5xl font-bold">
+          <h1 className="text-2xl md:text-5xl font-bold">
             Dive into the World of Anonymous Feedback
           </h1>
           <p className="mt-3 md:my-4 text-base md:text-lg">
@@ -27,20 +27,24 @@ export default function Home() {
 
         <Carousel
           plugins={[Autoplay({ delay: 2000 })]}
-          className="w-full max-w-lg md:max-w-xl"
+          className="w-full max-w-lg md:max-w-xl my-8"
         >
           <CarouselContent>
             {messages.map((message, index) => (
-              <CarouselItem key={index} className="p-4">
-                <Card className="p-4">
+              <CarouselItem key={index}>
+                <Card className="">
                   <CardHeader>
-                    <CardTitle>{message.title}</CardTitle>
+                    <CardTitle className="text-lg md:text-xl">
+                      {message.title}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col md:flex-row items-start space-y-2 md:space-y-0 md:space-x-4">
-                    <Mail className="flex-shrink-0" />
                     <div>
-                      <p>{message.content}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <div className="flex items-start gap-3">
+                        <Mail />
+                        <p>{message.content}</p>
+                      </div>
+                      <p className="text-xs md:text-sm text-muted-foreground mt-2">
                         {message.received}
                       </p>
                     </div>
@@ -50,7 +54,7 @@ export default function Home() {
             ))}
           </CarouselContent>
         </Carousel>
-        <div className="flex flex-col items-center gap-8 mt-6">
+        <div className="flex flex-col items-center gap-4 md:gap-8 mt-6">
           <h1>Send anonymous message</h1>
           <Link href={'/sign-up'}>
             <Button>Start Here</Button>
