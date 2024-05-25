@@ -6,12 +6,13 @@ import { useForm } from 'react-hook-form';
 import { useDebounceCallback } from 'usehooks-ts';
 import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/validators';
-import { z } from 'zod';
 import { ApiResponse } from '@/types/api-response';
 import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { EyeIcon, EyeOff, Loader2 } from 'lucide-react';
+import { z } from 'zod';
+import clsx from 'clsx';
 import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 import {
@@ -72,7 +73,6 @@ const Page: React.FC = () => {
       toast({
         title: 'Success',
         description: response.data.message,
-        duration: 3000,
       });
       router.replace(`/verify/${username}`);
     } catch (error) {
@@ -81,7 +81,6 @@ const Page: React.FC = () => {
       toast({
         title: 'SignUp Failed',
         description: errorMessage,
-        duration: 3000,
         variant: 'destructive',
       });
     } finally {
@@ -90,13 +89,12 @@ const Page: React.FC = () => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-screen bg-gray-800">
+    <main className="flex justify-center items-center min-h-screen bg-gray-800 px-8">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join True Feedback
+          <h1 className="text-xl font-extrabold tracking-tight lg:text-3xl">
+            SIGN-UP
           </h1>
-          <p className="mb-4">Sign up to start your anonymous adventure</p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -114,17 +112,20 @@ const Page: React.FC = () => {
                     }}
                   />
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
-                  {!isCheckingUsername && usernameMessage && (
-                    <p
-                      className={`text-sm ${
-                        usernameMessage === 'Username is available'
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }`}
-                    >
-                      {usernameMessage}
-                    </p>
-                  )}
+                  {username.length > 2 &&
+                    !isCheckingUsername &&
+                    usernameMessage && (
+                      <p
+                        className={clsx('text-sm', {
+                          'text-green-500':
+                            usernameMessage === 'Username is available',
+                          'text-red-500':
+                            usernameMessage !== 'Username is available',
+                        })}
+                      >
+                        {usernameMessage}
+                      </p>
+                    )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -202,7 +203,7 @@ const Page: React.FC = () => {
           </p>
         </div>
       </div>
-    </section>
+    </main>
   );
 };
 

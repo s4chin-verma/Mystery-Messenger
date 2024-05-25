@@ -58,8 +58,8 @@ export default function Page() {
   };
 
   return (
-    <section className="h-screen w-full flex justify-center items-center">
-      <div className="py-8 px-6 bg-gray-50 rounded-lg">
+    <main className="h-screen w-full flex justify-center items-center bg-gray-800">
+      <div className="py-8 px-6 bg-gray-50 rounded-xl">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -70,7 +70,7 @@ export default function Page() {
               name="pin"
               render={({ field }) => (
                 <FormItem className="flex flex-col items-center justify-center">
-                  <FormLabel className="text-xl mb-6">
+                  <FormLabel className="text-2xl mb-6">
                     One-Time Password
                   </FormLabel>
                   <FormControl>
@@ -99,6 +99,6 @@ export default function Page() {
           </form>
         </Form>
       </div>
-    </section>
+    </main>
   );
 }

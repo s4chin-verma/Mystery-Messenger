@@ -4,20 +4,31 @@ export const usernameValidation = z
   .string()
   .min(2, 'username must be at least 3 characters')
   .max(16, 'no more than 16 characters')
-  .regex(/^[a-zA-Z0-9_]+$/, 'username should not contain special characters');
+  .regex(/^[a-zA-Z0-9_]+$/, 'username should not contain special characters')
+  .refine(s => !s.includes(' '), 'No Spaces!');
 
-export const signUpSchema = z.object({
-  username: usernameValidation,
-  email: z.string().email({ message: 'invalid email address' }),
-  password: z
-    .string()
-    .min(8, 'password must be at least 8 characters')
-    .max(16, 'password can not be greater than 16 characters'),
-  confirmPassword: z
-    .string()
-    .min(8, 'password must be at least 8 characters')
-    .max(16, 'Confirm password can not be greater than 16 characters'),
-});
+export const signUpSchema = z
+  .object({
+    username: usernameValidation,
+    email: z.string().email({ message: 'invalid email address' }),
+    password: z
+      .string()
+      .min(8, 'password must be at least 8 characters')
+      .max(16, 'password can not be greater than 16 characters'),
+    confirmPassword: z
+      .string()
+      .min(8, 'password must be at least 8 characters')
+      .max(16, 'Confirm password can not be greater than 16 characters'),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'The passwords did not match with confirm password',
+        path: ['confirmPassword'],
+      });
+    }
+  });
 
 export const signInSchema = z.object({
   identifier: z.string().trim().min(1, { message: 'Field could not be empty' }),

@@ -55,8 +55,6 @@ const Page: React.FC = () => {
         toast({
           title: 'Login Successful',
           description: 'You have successfully logged in',
-          duration: 1000,
-          variant: 'success',
         });
       }
     } catch (error) {
@@ -72,13 +70,13 @@ const Page: React.FC = () => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-screen bg-gray-800">
+    <section className="flex justify-center items-center min-h-screen bg-gray-800 px-10">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Sign In to join True Feedback
+          <h1 className="text-xl font-extrabold tracking-tight lg:text-3xl mb-6">
+            Mystery Messenger
           </h1>
-          <p className="mb-4">Sign up to start your anonymous adventure</p>
+          <p className="mb-4">Sign in to start your anonymous adventure</p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -126,7 +124,7 @@ const Page: React.FC = () => {
         </Form>
         <div className="text-center mt-4">
           <p>
-            Dont have an account?
+            Don&apos;t have an account?{' '}
             <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
               Sign Up
             </Link>

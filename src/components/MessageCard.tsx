@@ -53,17 +53,21 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
     <Card className="card-bordered">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>{message.content}</CardTitle>
+          <CardTitle className="text-base md:text-xl">
+            {message.content}
+          </CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive">
                 <X className="w-5 h-5" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="w-[90%] md:w-full rounded-xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
+                <AlertDialogTitle className="md:text-xl">
+                  Are you absolutely sure?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="md:text-base">
                   This action cannot be undone. This will permanently delete
                   this message.
                 </AlertDialogDescription>
@@ -77,11 +81,10 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        <div className="text-sm">
+        <div className="text-xs md:text-sm">
           {dayjs(message.createdAt).format('MMM D, YYYY h:mm A')}
         </div>
       </CardHeader>
-      <CardContent></CardContent>
     </Card>
   );
 }
