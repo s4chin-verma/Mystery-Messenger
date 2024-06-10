@@ -37,7 +37,7 @@ export default function Page() {
     try {
       const response = await axios.post('/api/verify-code', {
         username: params.username,
-        verifyCode: data.pin,
+        code: data.pin,
       });
       toast({
         title: 'Success',
