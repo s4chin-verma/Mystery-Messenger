@@ -48,6 +48,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const checkUsernameUnique = async () => {
       if (username) setIsCheckingUsername(true);
+      console.log(username);
 
       try {
         const response = await axios.get<ApiResponse>(
@@ -56,6 +57,7 @@ const Page: React.FC = () => {
         setUsernameMessage(response.data.message);
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
+        console.log('catch block executed ');
         setUsernameMessage(axiosError.response?.data.message ?? 'Error');
       } finally {
         setIsCheckingUsername(false);
